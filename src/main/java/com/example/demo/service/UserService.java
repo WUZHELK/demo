@@ -10,8 +10,6 @@ public interface UserService {
 
     public Boolean add(UserBean userBean);
 
-    public void insertBatch();
-
     public Boolean del(Integer userId);
 
     public Boolean update(UserBean userBean);

@@ -18,6 +18,8 @@ public class UserBean {
     @TableField(value = "user_name")
     private String userName;
 
+    private String password;
+
     @TableField(value = "user_sex")
     private String userSex;
 
@@ -28,7 +30,7 @@ public class UserBean {
     private String cardNo;
 
     @TableField(value = "tel_no")
-    private long telNo;
+    private Long telNo;
 
     @TableField(value = "create_by")
     private String createBy;
@@ -41,6 +43,9 @@ public class UserBean {
 
     @TableField(value = "modify_time")
     private Date modifyTime;
+
+    @TableField(value = "modify_no")
+    private Integer modifyNo;
 
     @TableField(value = "delete_flag")
     private String deleteFlag;

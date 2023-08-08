@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,10 +27,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean add(UserBean userBean) {
         return userMapper.insert(userBean) > 0;
-    }
-
-    @Override
-    public void insertBatch() {
     }
 
     @Override
@@ -75,15 +72,18 @@ public class UserServiceImpl implements UserService {
         if(Objects.isNull(userBean)){
             return null;
         }
-        QueryWrapper<UserBean> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<UserBean> queryWrapper = new LambdaQueryWrapper<UserBean>();
         if (Strings.isNotBlank(userBean.getUserName())) {
-            queryWrapper.like("user_name", userBean.getUserName());
+            queryWrapper.like(UserBean::getUserName, userBean.getUserName());
+        }
+        if (Objects.nonNull(userBean.getUserAge())) {
+            queryWrapper.gt(UserBean::getUserAge, userBean.getUserAge());
         }
         if (Strings.isNotBlank(userBean.getCardNo())) {
-            queryWrapper.eq("card_no", userBean.getCardNo());
+            queryWrapper.eq(UserBean::getCardNo, userBean.getCardNo());
         }
         if (Objects.nonNull(userBean.getCreateTime())){
-            queryWrapper.ge("create_time", userBean.getCreateTime());
+            queryWrapper.ge(UserBean::getCreateTime, userBean.getCreateTime());
         }
         return userMapper.selectPage(page, queryWrapper);
     }
