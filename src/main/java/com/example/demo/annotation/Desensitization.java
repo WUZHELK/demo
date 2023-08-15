@@ -1,6 +1,7 @@
 package com.example.demo.annotation;
 
 import com.example.demo.Enum.DesensitizationTypeEnum;
+import com.example.demo.util.DesensitizationSerialize;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -12,7 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonSerialize()
+@JsonSerialize(using = DesensitizationSerialize.class)
 public @interface Desensitization {
 
     /**
