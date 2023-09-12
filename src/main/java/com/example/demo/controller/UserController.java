@@ -20,7 +20,7 @@ public class UserController {
 
     @RequestMapping("/select_user")
     public UserBean selectUser() {
-        return userService.findById(1);
+        return userService.findById(20);
     }
 
     @RequestMapping("/insert_user")
