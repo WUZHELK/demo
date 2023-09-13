@@ -3,14 +3,16 @@ package com.example.demo.response;
 import com.example.demo.Enum.ResultCode;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class ResponseResult {
+public class ResponseResult<T> implements Serializable{
 
     private int code;
 
     private String msg;
 
-    private Object data;
+    private T data;
 
     /**
      * 手动设置返回对象
@@ -19,7 +21,7 @@ public class ResponseResult {
      * @param msg
      * @param data
      */
-    public ResponseResult(int code, String msg, Object data) {
+    public ResponseResult(int code, String msg, T data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -30,7 +32,7 @@ public class ResponseResult {
      *
      * @param data
      */
-    public ResponseResult(Object data) {
+    public ResponseResult(T data) {
         this.code = ResultCode.RESULT_SUCCESS.getCode();
         this.msg = ResultCode.RESULT_SUCCESS.getMsg();
         this.data = data;
@@ -42,7 +44,7 @@ public class ResponseResult {
      * @param statusCode
      * @param data
      */
-    public ResponseResult(StatusCode statusCode, Object data) {
+    public ResponseResult(StatusCode statusCode, T data) {
         this.code = statusCode.getCode();
         this.msg = statusCode.getMsg();
         this.data = data;
