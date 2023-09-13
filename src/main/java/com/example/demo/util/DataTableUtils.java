@@ -14,7 +14,7 @@ import java.util.Map;
  * @author wuzhe
  * @date 2023-9-12 10:50:28
  */
-public class DataTableUtil {
+public class DataTableUtils {
 
     /**
      * 通过传入的Class来获取自定义注解@DataFiled
