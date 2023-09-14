@@ -2,37 +2,36 @@ package com.example.demo.util;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharsetUtil;
+import com.example.demo.constant.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 文件工具类
  *
  * @author longkai
  * @date 2023-9-13 09:22:21
- *
  */
 @Slf4j
 public class FileUtils {
 
-    private static final String localPath = "D:\\Test";
-
-    private static final String fileName = "yyyyMMdd_HHmmss";
-
-    private static final String filePostfix = ".txt";
-
     /**
      * 通过文件信息写入到默认的文件中
+     *
      * @param content
      * @return
      */
-    public static boolean uploadFile(String content){
-        return uploadFile(content, localPath,
-                DateUtil.format(new Date(), DateTimeFormatter.ofPattern(fileName)) + filePostfix);
+    public static boolean uploadFile(String content) {
+        return uploadFile(content, Constant.StringFields.LOCAL_PATH,
+                DateUtil.format(new Date(),
+                        DateTimeFormatter.ofPattern(Constant.StringFields.DATA_YYYYMMDD))
+                        + Constant.StringFields.FILE_POST_FIX);
     }
 
     /**
@@ -43,31 +42,35 @@ public class FileUtils {
      * @param selfFileName
      * @return
      */
-    public static boolean uploadFile(String content, String localFilePath, String selfFileName){
+    public static boolean uploadFile(String content, String localFilePath, String selfFileName) {
         try {
-            if(StringUtils.isBlank(selfFileName)){
-                selfFileName = DateTimeFormatter.ofPattern(fileName) + filePostfix;
+            if (StringUtils.isBlank(selfFileName)) {
+                selfFileName = DateTimeFormatter.ofPattern(Constant.StringFields.LOCAL_PATH)
+                        + Constant.StringFields.FILE_POST_FIX;
             }
-            if(!FileUtil.isDirectory(localFilePath)){
+            if (!FileUtil.isDirectory(localFilePath)) {
                 FileUtil.mkdir(localFilePath);
+            }
+            if(FileUtil.exist(FileUtil.newFile(localFilePath + Constant.StringFields.FILE_MENU_SIGN + selfFileName))){
+                FileUtil.del(FileUtil.newFile(localFilePath + Constant.StringFields.FILE_MENU_SIGN + selfFileName));
             }
 
             FileUtil.appendUtf8String(content, new File(localFilePath, selfFileName));
 
-            return FileUtil.isNotEmpty(FileUtil.newFile(localFilePath + "/" + selfFileName));
-        }catch (Exception e){
+            return FileUtil.isNotEmpty(FileUtil.newFile(localFilePath
+                    + Constant.StringFields.FILE_MENU_SIGN
+                    + selfFileName));
+        } catch (Exception e) {
             log.error("FileUtils exist error: " + e);
         }
         return false;
     }
 
-    public static void main(String[] args) {
-        StringBuilder stringBuilder = new StringBuilder("文件信息：");
-        stringBuilder.append(System.getProperty("line.separator"))
-                .append("随便写的信息")
-                .append(System.getProperty("line.separator"))
-                .append("署名人：wuzhe");
-        uploadFile(stringBuilder.toString());
+    public static List<String> readFile(String filePath) {
+        File file = new File(filePath);
+        //从文件中读取每一行的UTF-8编码数据
+        List<String> readUtf8Lines = FileUtil.readLines(file, CharsetUtil.CHARSET_UTF_8);
+        return readUtf8Lines;
     }
 
 }

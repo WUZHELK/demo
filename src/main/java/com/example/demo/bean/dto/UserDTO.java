@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +20,7 @@ public class UserDTO implements Serializable {
 
     private Integer userId;
 
+    @NotBlank(message = "用户名不能为空")
     private String userName;
 
     private String userSex;
