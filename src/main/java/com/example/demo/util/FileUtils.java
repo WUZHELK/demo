@@ -27,11 +27,9 @@ public class FileUtils {
      * @param content
      * @return
      */
-    public static boolean uploadFile(String content) {
+    public static boolean uploadFile(String content, String fileName) {
         return uploadFile(content, Constant.StringFields.LOCAL_PATH,
-                DateUtil.format(new Date(),
-                        DateTimeFormatter.ofPattern(Constant.StringFields.DATA_YYYYMMDD))
-                        + Constant.StringFields.FILE_POST_FIX);
+                fileName);
     }
 
     /**
