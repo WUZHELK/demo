@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class WriteFilesExample {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         log.info("start");
         System.currentTimeMillis();
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -57,7 +57,6 @@ public class WriteFilesExample {
         if(FileUtils.uploadFile(sb.toString())){
             log.info("write success");
         }
-
 
     }
 
