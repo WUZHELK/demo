@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class FileDTO implements Serializable {
 
     @NotBlank(message = "间隔符不能为空")
-    private String startLimiter;
+    private String delimiter;
 
     @NotBlank(message = "结束符不能为空")
     private String endLimiter;

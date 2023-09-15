@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.example.demo.bean.dto.FileDTO;
 import com.example.demo.constant.Constant;
 import com.example.demo.util.FileUtils;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -73,7 +74,7 @@ public class WriteFilesExample {
 
     private static Boolean test(FileDTO fileDTO) throws InterruptedException {
         // 文件数据基本信息
-        String startLimiter = fileDTO.getStartLimiter();
+        String delimiter = fileDTO.getDelimiter();
         String endLimiter = fileDTO.getEndLimiter();
         Integer writeNum = fileDTO.getWriteNum();
         Integer primaryIndex = fileDTO.getPrimaryIndex();
@@ -85,13 +86,13 @@ public class WriteFilesExample {
         List<String> indexList = FileUtils.readFile(indexInfoPath);
         fileName = fileDTO.getFileName() + DateUtil.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMdd"))
                 + Constant.StringFields.FILE_POST_FIX;
-        return test1(startLimiter, endLimiter, writeNum, fileName, indexList, primaryIndex);
+        return test1(delimiter, endLimiter, writeNum, fileName, indexList, primaryIndex);
     }
 
     /**
      * 生成文件内容并写入
      *
-     * @param startLimiter
+     * @param delimiter
      * @param endLimiter
      * @param writeNum
      * @param fileName
@@ -99,7 +100,7 @@ public class WriteFilesExample {
      * @param pkIndex
      * @return
      */
-    public static Boolean test1(String startLimiter, String endLimiter, Integer writeNum, String fileName,
+    public static Boolean test1(String delimiter, String endLimiter, Integer writeNum, String fileName,
                                 List<String> indexList, Integer pkIndex) {
         Boolean resultFlag = false;
         String dataTime = DateUtil.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -110,7 +111,7 @@ public class WriteFilesExample {
                 String e = indexList.get(j);
                 Integer index = Integer.parseInt(e);
                 if (j == pkIndex) {
-                    sb.append(dataTime).append((StringUtils.leftPad(Integer.toString(i), (index - 8), "0")));
+                    sb.append(dataTime).append((StringUtils.leftPad(Integer.toString(i), (index - dataTime.length()), "0")));
                 } else {
                     String msg = UUID.randomUUID().toString().replace("-", "");
                     msg = msg.length() > index ? msg.substring(0, index) : StringUtils.leftPad(msg, index, msg);
@@ -121,7 +122,7 @@ public class WriteFilesExample {
                 if (j >= indexList.size() - 1) {
                     sb.append(endLimiter);
                 } else {
-                    sb.append(startLimiter);
+                    sb.append(delimiter);
                 }
             }
             if (i != writeNum) {
