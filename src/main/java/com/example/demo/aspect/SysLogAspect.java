@@ -64,7 +64,7 @@ public class SysLogAspect {
     @AfterReturning(returning = "ret", pointcut = "webLogPointCut()")
     public void doAfterReturning(Object ret) throws Throwable {
         endTime = System.currentTimeMillis();
-        log.info("Request cast times：{}", (endTime - startTime));
+        log.info("Request cast times：{} ms", (endTime - startTime));
     }
 
 }

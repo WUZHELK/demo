@@ -1,12 +1,17 @@
 package com.example.demo.controller;
 
+import com.example.demo.bean.dto.FileDTO;
 import com.example.demo.bean.vo.User;
+import com.example.demo.example.WriteFilesExample;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class TestController {
@@ -33,5 +38,10 @@ public class TestController {
                 address("北京市朝阳区").build();
         System.out.println(user);
         return user;
+    }
+
+    @RequestMapping("/write_file")
+    public Boolean createFile(@Validated @RequestBody FileDTO fileDTO) throws InterruptedException, ExecutionException {
+        return WriteFilesExample.writeFileByName(fileDTO);
     }
 }
