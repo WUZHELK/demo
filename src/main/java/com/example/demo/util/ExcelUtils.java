@@ -1,10 +1,11 @@
 package com.example.demo.util;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.example.demo.bean.vo.Demo;
+import com.example.demo.bean.dto.MeiMeiFileDTO;
 import com.example.demo.bean.vo.FileEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -29,6 +30,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Excel工具类
+ *
+ * @author wuzhe
+ * @date 2023-9-18 16:48:37
+ */
 @Slf4j
 public class ExcelUtils {
 
@@ -40,54 +47,63 @@ public class ExcelUtils {
 
     public static final String UPLOADPATH = "D:/meimei/upload/";
 
-    public static void main(String[] args) throws FileNotFoundException {
-        EasyExcelOutport2();
-    }
-
-    public static void EasyExcelImport() {
-        String filePath = EASYIMPORT_PATH + "easyexcel-int.xlsx";
-        List<FileEntity> list = EasyExcel.read(filePath).head(FileEntity.class).sheet().doReadSync();
-        System.out.println(list);
-    }
-
-    public static void EasyExcelOutport() {
-        List<FileEntity> dataList = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setName("张三" + i);
-            fileEntity.setAge(20 + i);
-            fileEntity.setTime(new Date(System.currentTimeMillis() + i));
-            dataList.add(fileEntity);
+    public static String DownLoadFileByMeiMei(MeiMeiFileDTO fileDTO) {
+        String msg = "";
+        try{
+            List<FileEntity> fileDTOList = (List<FileEntity>) EasyExcelImport(FileEntity.class, fileDTO.getFileInName());
+            if(CollectionUtil.isNotEmpty(fileDTOList)){
+                List<?> filterList = fileDTOList.stream().filter(e -> e.getName().equals("111")).collect(Collectors.toList());
+                EasyExcelOutport(filterList, fileDTO.getFileOutName(), FileEntity.class);
+                msg = "文件写入完成 -->" + EASYOUTPORT_PATH + fileDTO.getFileOutName();
+            }else{
+                msg = fileDTO.getFileInName() + "模版导入数据为空";
+            }
+        }catch (Exception e){
+            log.error("DownLoadFileByMeiMei is error: " + e.getMessage());
+            msg = e.getMessage();
         }
-        EasyExcel.write(EASYOUTPORT_PATH + "easyexcel-out.xlsx", FileEntity.class).sheet("Sheet1").doWrite(dataList);
+        return msg;
     }
 
-    public static void EasyExcelOutport2() throws FileNotFoundException {
-        ArrayList<Demo> ls = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Demo demo = new Demo();
-            demo.setUsername("name" + i);
-            demo.setPassword("password" + i);
-            demo.setAge(i);
-            demo.setGender((i % 10 == 0) ? "男" : "女");
+    /**
+     * EasyExcel导入Excel
+     *
+     * @param cls
+     * @param fileInputPath
+     * @return
+     */
+    public static List<?> EasyExcelImport(Class cls, String fileInputPath) {
+        return EasyExcel.read(EASYIMPORT_PATH + fileInputPath).head(cls).sheet().doReadSync();
+    }
 
-            ls.add(demo);
-        }
-
+    /**
+     * EasyExcel根据过滤的数据导出Excel
+     *
+     * @param dataList
+     * @param fileOutputPath
+     * @param cls
+     * @throws FileNotFoundException
+     */
+    public static void EasyExcelOutport(List<?> dataList, String fileOutputPath, Class cls) throws FileNotFoundException {
         // 设置单元格样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
                 new HorizontalCellStyleStrategy(ExcelStyleUtils.getHeadStyle(), ExcelStyleUtils.getContentStyle());
-
-        ExcelWriter excelWriter = EasyExcel.write(new FileOutputStream(EASYOUTPORT_PATH + "demo.xlsx"))
+        // 列宽策略设置
+        ExcelCellWidthStyleStrategy widthStyleStrategy = new ExcelCellWidthStyleStrategy();
+        ExcelWriter excelWriter = EasyExcel.write(new FileOutputStream(EASYOUTPORT_PATH + fileOutputPath))
                 .registerWriteHandler(horizontalCellStyleStrategy)
+                .registerWriteHandler(widthStyleStrategy)
                 .build();
         // 总体统计 sheet
-        WriteSheet totalSheet = EasyExcel.writerSheet(0, "总体统计").head(Demo.class).build();
-        excelWriter.write(ls, totalSheet);
+        WriteSheet totalSheet = EasyExcel.writerSheet(0, "匹配数据").head(cls).build();
+        excelWriter.write(dataList, totalSheet);
         // web导出，这里必须要有这个finish，不然导出的文件是空的，官方文档的案例没写
         excelWriter.finish();
     }
 
+    /**
+     * XSSF导入demo
+     */
     public static void XSSFExcelUpload() {
         try (FileInputStream inputStream = new FileInputStream(UPLOADPATH + "用户信息表2007BigData.xlsx")) {
             //1.创建工作簿,使用excel能操作的这边都看看操作
@@ -104,6 +120,10 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     * SXSSF导入demo
+     * @throws Exception
+     */
     public static void SXSSFExcelUpload() throws Exception {
         //获取文件流
         //1.创建工作簿,使用excel能操作的这边都看看操作
@@ -216,6 +236,10 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     * XSSF写入
+     * @throws Exception
+     */
     public static void XSSFExcelWrite() throws Exception {
         log.info("XSSFExcelWrite start...");
         //创建一个工作簿
@@ -239,6 +263,9 @@ public class ExcelUtils {
         log.info("XSSFExcelWrite end");
     }
 
+    /**
+     * SXSSF写入
+     */
     public static void SXSSFExcelWrite() {
         log.info("SXSSFExcelWrite start...");
         //创建一个工作簿
