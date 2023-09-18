@@ -1,7 +1,9 @@
 package com.example.demo.util;
 
-import cn.hutool.json.JSONArray;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.example.demo.bean.vo.Demo;
 import com.example.demo.bean.vo.FileEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +52,7 @@ public class ExcelUtils {
 
     public static void EasyExcelOutport() {
         List<FileEntity> dataList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             FileEntity fileEntity = new FileEntity();
             fileEntity.setName("张三" + i);
             fileEntity.setAge(20 + i);
@@ -71,7 +73,19 @@ public class ExcelUtils {
 
             ls.add(demo);
         }
-        EasyExcel.write(new FileOutputStream(EASYOUTPORT_PATH + "demo.xlsx"), Demo.class).sheet(0).doWrite(ls);
+
+        // 设置单元格样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy =
+                new HorizontalCellStyleStrategy(ExcelStyleUtils.getHeadStyle(), ExcelStyleUtils.getContentStyle());
+
+        ExcelWriter excelWriter = EasyExcel.write(new FileOutputStream(EASYOUTPORT_PATH + "demo.xlsx"))
+                .registerWriteHandler(horizontalCellStyleStrategy)
+                .build();
+        // 总体统计 sheet
+        WriteSheet totalSheet = EasyExcel.writerSheet(0, "总体统计").head(Demo.class).build();
+        excelWriter.write(ls, totalSheet);
+        // web导出，这里必须要有这个finish，不然导出的文件是空的，官方文档的案例没写
+        excelWriter.finish();
     }
 
     public static void XSSFExcelUpload() {
