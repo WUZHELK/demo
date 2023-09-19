@@ -16,7 +16,7 @@ import java.util.Date;
 @EqualsAndHashCode
 public class UserDTO implements Serializable {
 
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = -89874584125365L;
 
     private Integer userId;
 

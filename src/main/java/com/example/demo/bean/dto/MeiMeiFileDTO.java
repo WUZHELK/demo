@@ -12,6 +12,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class MeiMeiFileDTO implements Serializable {
 
+    private static final long serialVersionUID = -584685452145L;
+
     @NotBlank(message = "导入文件名不能为空")
     private String fileInName;
 

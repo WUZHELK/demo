@@ -16,6 +16,8 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class FileDTO implements Serializable {
 
+    private static final long serialVersionUID = -235461321345L;
+
     @NotBlank(message = "间隔符不能为空")
     private String delimiter;
 
