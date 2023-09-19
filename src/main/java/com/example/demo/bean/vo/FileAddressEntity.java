@@ -14,7 +14,19 @@ import java.util.Date;
 @AllArgsConstructor
 public class FileAddressEntity implements Serializable {
 
+    @ExcelProperty(value = "id")
+    private String xuhao;
+
+    @ExcelProperty(value = "订单号")
+    private String orderNum;
+
     @ExcelProperty(value = "菜鸟地址")
-    private String address;
+    private String cnAddress;
+
+    @ExcelProperty(value = "菜鸟名称")
+    private String cnName;
+
+    @ExcelProperty(value = "菜鸟手机号")
+    private String cnTel;
 
 }

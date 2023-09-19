@@ -27,7 +27,7 @@ public class WriteFilesExample {
     static {
         map1.put("index", "D:\\Test\\index.txt");
         map1.put("flag", "每日卡片激活文件");
-        map1.put("fileName", "10231990000_NGCC-ACTIVEDCARD_0000_20350813_A_0001_0001_##.txt");
+        map1.put("fileName", "10231990000_NGCC-ACTIVEDCARD_0000_20350813_A_0001_0001_##");
         map1.put("filePath", "NGCC-ACTIVEDCARD");
     }
 
@@ -37,7 +37,7 @@ public class WriteFilesExample {
     static {
         map2.put("index", "D:\\Test\\index2.txt");
         map2.put("flag", "自动续卡审核检查失败卡片列表（审核阶段）");
-        map2.put("fileName", "10231990000_NGCC-CDRISR_ERR_0000_20350813_A_0001_0001_####.txt");
+        map2.put("fileName", "10231990000_NGCC-CDRISR_ERR_0000_20350813_A_0001_0001_####");
         map2.put("filePath", "NGCC-CDRISR_ERR");
     }
 
@@ -47,7 +47,7 @@ public class WriteFilesExample {
     static {
         map3.put("index", "D:\\Test\\index3.txt");
         map3.put("flag", "自动续卡审核检查失败卡片列表(制卡阶段)");
-        map3.put("fileName", "10231990000_NGCC-CDRISP_ERR_0000_20350813_A_0001_0001_####.txt");
+        map3.put("fileName", "10231990000_NGCC-CDRISP_ERR_0000_20350813_A_0001_0001_####");
         map3.put("filePath", "NGCC-CDRISP_ERR");
     }
 
@@ -57,7 +57,7 @@ public class WriteFilesExample {
     static {
         map4.put("index", "D:\\Test\\index4.txt");
         map4.put("flag", "自动续卡检查通过卡片列表（审核阶段）");
-        map4.put("fileName", "10231990000_NGCC-CDRISR_RST_0000_20350813_A_0001_0001_####.txt");
+        map4.put("fileName", "10231990000_NGCC-CDRISR_RST_0000_20350813_A_0001_0001_####");
         map4.put("filePath", "NGCC-CDRISR_RST");
     }
 
@@ -67,7 +67,7 @@ public class WriteFilesExample {
     static {
         map5.put("index", "D:\\Test\\index5.txt");
         map5.put("flag", "自动续卡检查通过卡片列表（制卡阶段）");
-        map5.put("fileName", "10231990000_NGCC-CDRISP_RST_0000_20350813_A_0001_0001_####.txt");
+        map5.put("fileName", "10231990000_NGCC-CDRISP_RST_0000_20350813_A_0001_0001_####");
         map5.put("filePath", "NGCC-CDRISP_RST");
     }
 

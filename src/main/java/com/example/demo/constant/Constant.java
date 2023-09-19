@@ -11,5 +11,13 @@ public class Constant {
         public static final String DATA_YYYYMMDD = "yyyyMMdd";
 
         public static final String FILE_POST_FIX = ".txt";
+
+        public static final String EASYIMPORT_PATH = "D:/meimei/easyimport/";
+
+        public static final String EASYOUTPORT_PATH = "D:/meimei/easyoutport/";
+
+        public static final String PATH = "D:/meimei/download/";
+
+        public static final String UPLOADPATH = "D:/meimei/upload/";
     }
 }

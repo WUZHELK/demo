@@ -12,6 +12,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class AddressEntity implements Serializable {
 
+    @ExcelProperty(value = "id")
+    private String xuhao;
+
+    @ExcelProperty(value = "订单号")
+    private String orderNum;
+
+    @ExcelProperty(value = "菜鸟地址")
+    private String cnAddress;
+
+    @ExcelProperty(value = "菜鸟名称")
+    private String cnName;
+
+    @ExcelProperty(value = "菜鸟手机号")
+    private String cnTel;
+
     @ExcelProperty(value = "省")
     private String province;
 
