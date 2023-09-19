@@ -25,6 +25,9 @@ public class FileDTO implements Serializable {
     @NotNull(message = "数据量不能为空")
     private Integer writeNum;
 
+    @NotNull(message = "文件数量不能为空")
+    private Integer totalSize;
+
     @NotNull(message = "主键下标不能为空")
     private Integer primaryIndex;
 
