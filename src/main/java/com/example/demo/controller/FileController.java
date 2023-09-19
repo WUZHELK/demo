@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/file")
 public class FileController {
 
     @RequestMapping("/download_file")
-    public String createFile(@Validated @RequestBody MeiMeiFileDTO fileDTO) throws FileNotFoundException {
-        return ExcelUtils.DownLoadFileByMeiMei(fileDTO);
+    public String createFile(@RequestBody HashMap map) throws FileNotFoundException {
+        return ExcelUtils.DownLoadFileByMeiMei(map);
     }
 }

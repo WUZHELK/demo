@@ -1,12 +1,15 @@
 package com.example.demo.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.example.demo.bean.dto.MeiMeiFileDTO;
 import com.example.demo.bean.vo.FileEntity;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ooxml.util.SAXHelper;
@@ -20,14 +23,12 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
+import org.springframework.beans.BeanUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,14 +48,19 @@ public class ExcelUtils {
 
     public static final String UPLOADPATH = "D:/meimei/upload/";
 
-    public static String DownLoadFileByMeiMei(MeiMeiFileDTO fileDTO) {
+    public static String DownLoadFileByMeiMei(HashMap map) {
         String msg = "";
+        MeiMeiFileDTO fileDTO = new MeiMeiFileDTO();
+        if(MapUtil.isNotEmpty(map)){
+            fileDTO = BeanUtil.toBean(map, MeiMeiFileDTO.class);
+        }
+
         try{
             List<FileEntity> fileDTOList = (List<FileEntity>) EasyExcelImport(FileEntity.class, fileDTO.getFileInName());
             if(CollectionUtil.isNotEmpty(fileDTOList)){
                 List<?> filterList = fileDTOList.stream().filter(e -> e.getName().equals("111")).collect(Collectors.toList());
                 EasyExcelOutport(filterList, fileDTO.getFileOutName(), FileEntity.class);
-                msg = "文件写入完成 -->" + EASYOUTPORT_PATH + fileDTO.getFileOutName();
+                msg = "文件写入完成-->" + EASYOUTPORT_PATH + fileDTO.getFileOutName();
             }else{
                 msg = fileDTO.getFileInName() + "模版导入数据为空";
             }
@@ -137,8 +143,10 @@ public class ExcelUtils {
         // 解析每个Sheet数据
         Iterator<InputStream> sheetsData = xssfReader.getSheetsData();
         while (sheetsData.hasNext()) {
-            try (InputStream inputStream = sheetsData.next();) {
+            try (InputStream inputStream = sheetsData.next()) {
                 xmlReader.parse(new InputSource(inputStream));
+            }catch (IOException e){
+                log.error("SXSSFExcelUpload is error: " + e.getMessage());
             }
         }
     }
@@ -198,11 +206,12 @@ public class ExcelUtils {
         }
     }
 
-    public static void getValue(Cell cell) {
+    public static String getValue(Cell cell) {
+        String cellValue = "";
         //匹配类型数据
         if (cell != null) {
             CellType cellType = cell.getCellType();
-            String cellValue = "";
+
             switch (cellType) {
                 case STRING: //字符串
                     System.out.print("[String类型]");
@@ -232,8 +241,8 @@ public class ExcelUtils {
                     System.out.print("[数据类型错误]");
                     break;
             }
-            System.out.println(cellValue);
         }
+        return cellValue;
     }
 
     /**
