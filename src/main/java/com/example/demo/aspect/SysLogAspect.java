@@ -1,16 +1,19 @@
 package com.example.demo.aspect;
 
+import cn.hutool.core.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 @Aspect
@@ -22,12 +25,14 @@ public class SysLogAspect {
 
     private Long endTime;
 
-    public SysLogAspect(){
+    private String methInfo;
+
+    public SysLogAspect() {
 
     }
 
     @Pointcut("execution(public * com.example.demo.controller..*.*(..)) ")
-    public void webLogPointCut(){
+    public void webLogPointCut() {
 
     }
 
@@ -40,17 +45,25 @@ public class SysLogAspect {
      * @throws Throwable
      */
     @Before("webLogPointCut()")
-    public void doBefore(JoinPoint joinPoint){
+    public void doBefore(JoinPoint joinPoint) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if(null == attributes){
+        if (null == attributes) {
             return;
         }
 
+        //这一步获取到的方法有可能是代理方法也有可能是真实方法
+        Method m = ((MethodSignature) joinPoint.getSignature()).getMethod();
+        //判断代理对象本身是否是连接点所在的目标对象，不是的话就要通过反射重新获取真实方法
+        if (joinPoint.getThis().getClass() != joinPoint.getTarget().getClass()) {
+            m = ReflectUtil.getMethod(joinPoint.getTarget().getClass(), m.getName(), m.getParameterTypes());
+        }
+
+        methInfo = m.getDeclaringClass().getName() + "." + m.getName();
         HttpServletRequest request = attributes.getRequest();
         //打印请求的内容
         startTime = System.currentTimeMillis();
-        log.info("Request url: 【{}】", request.getServletPath());
-        log.info("Request params: {}", Arrays.toString(joinPoint.getArgs()));
+        log.info(methInfo + " Request url: 【{}】", request.getServletPath());
+        log.info(methInfo + " Request params: {}", Arrays.toString(joinPoint.getArgs()));
     }
 
     /**
@@ -64,7 +77,7 @@ public class SysLogAspect {
     @AfterReturning(returning = "ret", pointcut = "webLogPointCut()")
     public void doAfterReturning(Object ret) throws Throwable {
         endTime = System.currentTimeMillis();
-        log.info("Request cast times：{} ms", (endTime - startTime));
+        log.info(methInfo + " Request cast times：{} ms", (endTime - startTime));
     }
 
 }
