@@ -96,12 +96,12 @@ public class WriteFilesExample {
         fileMap.put("NOTES记录批量导入文件接口", map6);
     }
 
-    private static List<String> getCardListByFile(String cardPath){
+    private static List<String> getCardListByFile(String cardPath) {
         List<String> resultList = Lists.newArrayList();
         // 文件基本信息
         List<String> cardList = FileUtils.readFile(cardPath);
         log.info("cardList---->" + cardList.size());
-        if(CollectionUtil.isNotEmpty(cardList)){
+        if (CollectionUtil.isNotEmpty(cardList)) {
             resultList = cardList.stream().distinct().collect(Collectors.toList());
             log.info("resultList---->" + resultList.size());
         }
@@ -139,13 +139,12 @@ public class WriteFilesExample {
         // 文件基本信息
         List<String> indexList = FileUtils.readFile(indexInfoPath);
 
-        if(map6.get("flag").equals(fileName)){
+        if (map6.get("flag").equals(fileName)) {
             List<String> cardList = getCardListByFile(map.get("cardPath"));
             fileName = getFileName2(map.get("fileName")) + Constant.StringFields.FILE_POST_FIX;
             String filePath = Constant.StringFields.LOCAL_PATH + Constant.StringFields.FILE_MENU_SIGN + map.get("filePath");
             test1(delimiter, endLimiter, cardList, fileName, filePath, indexList, primaryIndex);
-        }
-        else{
+        } else {
             for (int i = 1; i <= totalSize; i++) {
                 fileName = getFileName(Integer.toString(i), map.get("fileName")) + Constant.StringFields.FILE_POST_FIX;
                 String filePath = Constant.StringFields.LOCAL_PATH + Constant.StringFields.FILE_MENU_SIGN + map.get("filePath");
@@ -183,8 +182,8 @@ public class WriteFilesExample {
                     sb.append(dataTime)
                             .append(totalNum)
                             .append((StringUtils.leftPad(Integer.toString(i),
-                                (index - dataTime.length() - totalNum.length()),
-                                "0")));
+                                    (index - dataTime.length() - totalNum.length()),
+                                    "0")));
                 } else {
                     String msg = UUID.randomUUID().toString().replace("-", "");
                     msg = msg.length() > index ? msg.substring(0, index) : StringUtils.leftPad(msg, index, msg);
@@ -226,12 +225,13 @@ public class WriteFilesExample {
                                 String filePath, List<String> indexList, Integer pkIndex) {
         Boolean resultFlag = false;
         StringBuilder sb = new StringBuilder();
+        
         for (int i = 1; i <= cardList.size(); i++) {
             for (int j = 0; j < indexList.size(); j++) {
                 String e = indexList.get(j);
                 Integer index = Integer.parseInt(e);
                 if (j == pkIndex) {
-                    sb.append(cardList.get(i-1));
+                    sb.append(cardList.get(i - 1));
                 } else {
                     String msg = UUID.randomUUID().toString().replace("-", "");
                     msg = msg.length() > index ? msg.substring(0, index) : StringUtils.leftPad(msg, index, msg);
