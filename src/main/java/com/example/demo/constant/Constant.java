@@ -12,6 +12,8 @@ public class Constant {
 
         public static final String FILE_POST_FIX = ".txt";
 
+        public static final String FILE_POST_XML = ".xml";
+
         public static final String EASYIMPORT_PATH = "D:/meimei/easyimport/";
 
         public static final String EASYOUTPORT_PATH = "D:/meimei/easyoutport/";

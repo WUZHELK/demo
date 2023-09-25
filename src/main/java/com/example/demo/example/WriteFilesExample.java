@@ -122,6 +122,43 @@ public class WriteFilesExample {
         return fileName.replace("yyyyMMdd", dataTime);
     }
 
+    private static Boolean testCopy(FileDTO fileDTO) throws InterruptedException {
+        // 文件数据基本信息
+        String delimiter = fileDTO.getDelimiter();
+        String endLimiter = fileDTO.getEndLimiter();
+        Integer primaryIndex = fileDTO.getPrimaryIndex();
+        // 文件中数据量
+        Integer writeNum = fileDTO.getWriteNum();
+        // 需要生成的总文件数
+        Integer totalSize = fileDTO.getTotalSize();
+        // 文件基本信息
+        List<String> indexList = FileUtils.readFile(fileDTO.getIndexPath());
+        String charSet = "UTF_8";
+        String fileType = Constant.StringFields.FILE_POST_FIX;
+        Map<String, String> gbkMaps = Maps.newHashMap();
+        gbkMaps.put("PCG", "PCG");
+        gbkMaps.put("PDE", "PDE");
+        gbkMaps.put("PXE", "PXE");
+        if (gbkMaps.containsKey(fileDTO.getSavePath())) {
+            charSet = "GBK";
+            fileType = "";
+        }
+        if ("NGCC-EXREQ".equals(fileDTO.getSavePath())) {
+            fileType = Constant.StringFields.FILE_POST_XML;
+        }
+
+        for (int i = 1; i <= totalSize; i++) {
+            String fileName = getFileName(Integer.toString(i), fileDTO.getFileName()) + fileType;
+            String filePath = Constant.StringFields.LOCAL_PATH + Constant.StringFields.FILE_MENU_SIGN
+                    + DateUtil.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMdd"))
+                    + Constant.StringFields.FILE_MENU_SIGN
+                    + fileDTO.getSavePath();
+            test1(delimiter, endLimiter, writeNum, Integer.toString(i), fileName, filePath, indexList, primaryIndex, charSet);
+        }
+
+        return true;
+    }
+
     private static Boolean test(FileDTO fileDTO) throws InterruptedException {
         // 文件数据基本信息
         String delimiter = fileDTO.getDelimiter();
@@ -143,12 +180,12 @@ public class WriteFilesExample {
             List<String> cardList = getCardListByFile(map.get("cardPath"));
             fileName = getFileName2(map.get("fileName")) + Constant.StringFields.FILE_POST_FIX;
             String filePath = Constant.StringFields.LOCAL_PATH + Constant.StringFields.FILE_MENU_SIGN + map.get("filePath");
-            test1(delimiter, endLimiter, cardList, fileName, filePath, indexList, primaryIndex);
+            test1(delimiter, endLimiter, cardList, fileName, filePath, indexList, primaryIndex, "UTF-8");
         } else {
             for (int i = 1; i <= totalSize; i++) {
                 fileName = getFileName(Integer.toString(i), map.get("fileName")) + Constant.StringFields.FILE_POST_FIX;
                 String filePath = Constant.StringFields.LOCAL_PATH + Constant.StringFields.FILE_MENU_SIGN + map.get("filePath");
-                test1(delimiter, endLimiter, writeNum, Integer.toString(i), fileName, filePath, indexList, primaryIndex);
+                test1(delimiter, endLimiter, writeNum, Integer.toString(i), fileName, filePath, indexList, primaryIndex, "UTF-8");
             }
         }
 
@@ -169,7 +206,7 @@ public class WriteFilesExample {
      * @return
      */
     public static Boolean test1(String delimiter, String endLimiter, Integer writeNum, String totalNum, String fileName,
-                                String filePath, List<String> indexList, Integer pkIndex) {
+                                String filePath, List<String> indexList, Integer pkIndex, String charSet) {
         Boolean resultFlag = false;
         String dataTime = DateUtil.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMdd"));
         StringBuilder sb = new StringBuilder();
@@ -201,7 +238,7 @@ public class WriteFilesExample {
                 sb.append("\n");
             }
         }
-        if (FileUtils.uploadFile(sb.toString(), filePath, fileName)) {
+        if (FileUtils.uploadFile(sb.toString(), filePath, fileName, charSet)) {
             log.info("write success");
             resultFlag = true;
         }
@@ -222,10 +259,10 @@ public class WriteFilesExample {
      * @return
      */
     public static Boolean test1(String delimiter, String endLimiter, List<String> cardList, String fileName,
-                                String filePath, List<String> indexList, Integer pkIndex) {
+                                String filePath, List<String> indexList, Integer pkIndex, String charSet) {
         Boolean resultFlag = false;
         StringBuilder sb = new StringBuilder();
-        
+
         for (int i = 1; i <= cardList.size(); i++) {
             for (int j = 0; j < indexList.size(); j++) {
                 String e = indexList.get(j);
@@ -249,7 +286,7 @@ public class WriteFilesExample {
                 sb.append("\n");
             }
         }
-        if (FileUtils.uploadFile(sb.toString(), filePath, fileName)) {
+        if (FileUtils.uploadFile(sb.toString(), filePath, fileName, charSet)) {
             log.info("write success");
             resultFlag = true;
         }
@@ -275,6 +312,26 @@ public class WriteFilesExample {
             Boolean resultFlag = false;
             try {
                 resultFlag = test(fileDTO);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return resultFlag;
+        });
+
+        executorService.shutdown();
+        log.info("resultFlag：" + future.get());
+        return future.get();
+    }
+
+    public static Boolean writeFileByName2(FileDTO fileDTO) throws ExecutionException, InterruptedException {
+        log.info("start");
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        Future<Boolean> future = executorService.submit(() -> {
+            Boolean resultFlag = false;
+            try {
+                resultFlag = testCopy(fileDTO);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

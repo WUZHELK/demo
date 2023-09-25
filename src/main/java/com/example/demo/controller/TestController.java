@@ -44,4 +44,9 @@ public class TestController {
     public Boolean createFile(@Validated @RequestBody FileDTO fileDTO) throws InterruptedException, ExecutionException {
         return WriteFilesExample.writeFileByName(fileDTO);
     }
+
+    @RequestMapping("/write_file2")
+    public Boolean createFile2(@Validated @RequestBody FileDTO fileDTO) throws InterruptedException, ExecutionException {
+        return WriteFilesExample.writeFileByName2(fileDTO);
+    }
 }

@@ -36,4 +36,10 @@ public class FileDTO implements Serializable {
     @NotBlank(message = "文件名不能为空")
     private String fileName;
 
+    @NotBlank(message = "index文件路径不能为空")
+    private String indexPath;
+
+    @NotBlank(message = "文件保存路径名不能为空")
+    private String savePath;
+
 }

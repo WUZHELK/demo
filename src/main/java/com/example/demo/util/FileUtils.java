@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ public class FileUtils {
      */
     public static boolean uploadFile(String content, String fileName) {
         return uploadFile(content, Constant.StringFields.LOCAL_PATH,
-                fileName);
+                fileName, "UTF_8");
     }
 
     /**
@@ -40,7 +41,7 @@ public class FileUtils {
      * @param selfFileName
      * @return
      */
-    public static boolean uploadFile(String content, String localFilePath, String selfFileName) {
+    public static boolean uploadFile(String content, String localFilePath, String selfFileName, String charset) {
         try {
             if (StringUtils.isBlank(selfFileName)) {
                 selfFileName = DateTimeFormatter.ofPattern(Constant.StringFields.LOCAL_PATH)
@@ -53,7 +54,11 @@ public class FileUtils {
                 FileUtil.del(FileUtil.newFile(localFilePath + Constant.StringFields.FILE_MENU_SIGN + selfFileName));
             }
 
-            FileUtil.appendUtf8String(content, new File(localFilePath, selfFileName));
+            if("UTF_8".equals(charset)){
+                FileUtil.appendUtf8String(content, new File(localFilePath, selfFileName));
+            }else{
+                FileUtil.appendString(content, new File(localFilePath, selfFileName), CharsetUtil.CHARSET_GBK);
+            }
 
             return FileUtil.isNotEmpty(FileUtil.newFile(localFilePath
                     + Constant.StringFields.FILE_MENU_SIGN
